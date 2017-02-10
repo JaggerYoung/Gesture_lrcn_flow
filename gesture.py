@@ -61,7 +61,9 @@ def readData(Filename):
 
 def readImg(Filename, data_shape):
     mat = []
-    idx = random.randint(0, len(Filename)-LEN_SEQ)
+    #idx = random.randint(0, len(Filename)-LEN_SEQ)
+    le = len(Filename)/LEN_SEQ
+    idx = random.randint(0, le-1)
     img_1 = cv2.imread(Filename[idx][0], cv2.IMREAD_GRAYSCALE)
     img_1 = cv2.resize(img_1, (data_shape[2], data_shape[1]/10))
     img_1 = np.multiply(img_1, 1/255.0)
@@ -72,6 +74,7 @@ def readImg(Filename, data_shape):
     img_2 = img_2.tolist()
 
     for i in range(LEN_SEQ-1):
+        ret = random.randint((i+1)*le, (i+2)*le-1)
         tmp_1 = cv2.imread(Filename[idx+i+1][0], cv2.IMREAD_GRAYSCALE)
         tmp_1 = cv2.resize(tmp_1, (data_shape[2], data_shape[1]/10))
         tmp_1 = np.multiply(tmp_1, 1/255.0)
@@ -163,7 +166,7 @@ if __name__ == '__main__':
     num_label = 5
     seq_len = LEN_SEQ
 
-    devs = [mx.context.gpu(0)]
+    devs = [mx.context.gpu(2)]
     network = c3d_bilstm(num_lstm_layer, seq_len, num_hidden, num_label)
 
     train_file = '/data/zhigang.yang/gesture_train.txt'
@@ -180,7 +183,7 @@ if __name__ == '__main__':
 
     model = mx.model.FeedForward(ctx           = devs,
                                  symbol        = network,
-                                 num_epoch     = 500,
+                                 num_epoch     = 400,
                                  learning_rate = 0.003,
                                  momentum      = 0.0015,
                                  wd            = 0.0005,
@@ -198,4 +201,4 @@ if __name__ == '__main__':
     eval_metrics = [mx.metric.np(Accuracy)]
     #model.fit(X = data_train, eval_data = data_val, eval_metric = eval_metrics, batch_end_callback = batch_end_callbacks, epoch_end_callback=checkpoint)  
     model.fit(X = data_train, eval_data = data_val, eval_metric = eval_metrics, batch_end_callback = batch_end_callbacks)  
-    model.save('./model/cnn_lstm', 500)
+    model.save('./model/cnn_lstm', 400)
