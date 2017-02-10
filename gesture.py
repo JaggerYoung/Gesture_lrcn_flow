@@ -75,13 +75,13 @@ def readImg(Filename, data_shape):
 
     for i in range(LEN_SEQ-1):
         ret = random.randint((i+1)*le, (i+2)*le-1)
-        tmp_1 = cv2.imread(Filename[idx+i+1][0], cv2.IMREAD_GRAYSCALE)
+        tmp_1 = cv2.imread(Filename[idx+ret][0], cv2.IMREAD_GRAYSCALE)
         tmp_1 = cv2.resize(tmp_1, (data_shape[2], data_shape[1]/10))
         tmp_1 = np.multiply(tmp_1, 1/255.0)
 	tmp_1 = tmp_1.tolist()
 	img_1.extend(tmp_1)
 
-        tmp_2 = cv2.imread(Filename[idx+i+1][1], cv2.IMREAD_GRAYSCALE)
+        tmp_2 = cv2.imread(Filename[idx+ret][1], cv2.IMREAD_GRAYSCALE)
         tmp_2 = cv2.resize(tmp_2, (data_shape[2], data_shape[1]/10))
         tmp_2 = np.multiply(tmp_2, 1/255.0)
 	tmp_2 = tmp_2.tolist()
